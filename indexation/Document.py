@@ -6,7 +6,7 @@ Created on Sun Feb 10 11:10:25 2019
 
 source_1 : https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/232793-definissez-des-proprietes
 """
-
+#Classe représentant un document
 class Document:
     def __init__(self):
         """Constructeur pour la classe."""
