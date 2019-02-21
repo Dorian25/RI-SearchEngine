@@ -3,6 +3,7 @@
 Created on Sat Feb 16 18:24:39 2019
 
 @author: Dorian
+@author: Abdela
 """
 
 from .IRModel import IRModel
@@ -15,8 +16,7 @@ class Vectoriel(IRModel):
         super().__init__(indexerSimple)
         self.weighter = weighter
         self.normalized = normalized
-        
-        
+    
     def getScores(self,query):
         scores = []
         
@@ -35,25 +35,17 @@ class Vectoriel(IRModel):
                 norm_q = 0
                 norm_d = 0
                 
-                """
                 for t,w_q in q.items() :
                     norm_q += w_q**2
                     if t in d :
                         prod_scal += q[t] * d[t]
                 for t,w_d in d.items() :
                     norm_d += w_d**2
-                """
-                
-                for i in range(len(q)) :
-                    prod_scal += q[i]*d[i]
-                    norm_q += q[i]**2
-                    norm_d += d[i]**2
                 
                 score = prod_scal / (np.sqrt(norm_d) + np.sqrt(norm_q))
                 
                 scores.append((doc_i, score))
                 
-            
         else : 
             #Produit Scalaire
             for doc_i, tf in index.items() :
@@ -62,14 +54,10 @@ class Vectoriel(IRModel):
             
                 score = 0
                     
-                """
                 for t,w_q in q.items() :
                     if t in d :
                         score += w_q * d[t]
-                """
-                for i in range(len(q)) :
-                    score += q[i]*d[i]
-                        
+                
                 scores.append((doc_i,score))
             
         return scores

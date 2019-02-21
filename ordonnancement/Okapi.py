@@ -3,6 +3,7 @@
 Created on Sat Feb 16 18:36:13 2019
 
 @author: Dorian
+@author: Abdela
 
 source 1 : https://fr.wikipedia.org/wiki/Okapi_BM25
 """

@@ -3,6 +3,7 @@
 Created on Sun Feb 10 11:10:25 2019
 
 @author: Dorian
+@author: Abdela
 
 source_1 : https://openclassrooms.com/fr/courses/235344-apprenez-a-programmer-en-python/232793-definissez-des-proprietes
 """

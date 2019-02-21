@@ -3,6 +3,7 @@
 Created on Sun Feb 10 11:23:55 2019
 
 @author: Dorian
+@author: Abdela
 
 source_1 : https://stackoverflow.com/questions/21453117/json-dumps-not-working
 """

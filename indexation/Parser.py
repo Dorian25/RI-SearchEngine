@@ -3,6 +3,7 @@
 Created on Sun Feb 10 11:29:58 2019
 
 @author: Dorian
+@author: Abdela
 """
 
 from .Document import Document

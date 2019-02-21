@@ -3,6 +3,7 @@
 Created on Sun Feb 10 11:27:58 2019
 
 @author: Dorian
+@author: Abdela
 """
 
 from indexation.Document import Document
@@ -36,11 +37,9 @@ index_cacm.indexation(documents_cacm)
 #index_cisi = IndexerSimple("cisi")
 #index_cisi.indexation(documents_cisi)
 
-#w = Weighter1(index_cacm)
 w = Weighter5(index_cacm)
-#print(w.getWeightsForDoc("54"))
 v = Vectoriel(index_cacm,w,False)
-print(v.getRanking("home top sales homes"))
+rank = v.getRanking("home top sales eau")
 
 #print(index_cacm.getTfsForDoc(documents_cacm[5]))
 #print(index_cacm.getTfIDFsForDoc(documents_cacm[0]))

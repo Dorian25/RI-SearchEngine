@@ -3,6 +3,7 @@
 Created on Sat Feb 16 17:05:01 2019
 
 @author: Dorian
+@author: Abdela
 """
 
 from .Weighter import Weighter
@@ -12,53 +13,44 @@ import numpy as np
 class Weighter5(Weighter):
     
     def __init__(self, indexerSimple) :
-        super().__init__(indexerSimple)
-        
-    """    
-       d1 | d2 | d3 
-    t1  1    0    4
-    t2  1    1    3
-    t3  0    3    1
-    t4  1    0    0 
-    ...
-    tn  0    1    0
-    """    
-    #taille vecteur = nb mots de la collection
+        super().__init__(indexerSimple)   
+    
     def getWeightsForDoc(self,idDoc):
-        weights = []
+        weights = self.indexerSimple.index[idDoc] if idDoc in self.indexerSimple.index else {}
         #nb doc de la collection
         N = len(self.indexerSimple.index)
         
-        for t,v in self.indexerSimple.index_inv.items():
-            if idDoc in v :
-                #nb doc contenant t
-                df = len(v)
-                idf = np.log((N+1)/(1+df))
-                weights.append((1+np.log(v[idDoc]))*idf)
-            else:
-                weights.append(0)    
+        for t,v in weights.items():
+            #nb doc contenant t
+            df = len(self.indexerSimple.index_inv[t])
+            idf = np.log((N+1)/(1+df))
+            weights[t]  = (1+np.log(v))*idf
+            
+        return weights
+        
+    def getWeightsForStem(self,stem):
+        weights = self.indexerSimple.index_inv[stem] if stem in self.indexerSimple.index_inv else {}
+        #nb doc de la collection
+        N = len(self.indexerSimple.index)
+        
+        for doc_i,v in weights.items():
+            #nb doc contenant t
+            df = len(weights)
+            idf = np.log((N+1)/(1+df))
+            weights[doc_i] = (1+np.log(v))*idf
         
         return weights
     
- 
-    def getWeightsForStem(self,stem):
-        pass
     
-
     def getWeightsForQuery(self,query):
         porterStemmer = PorterStemmer() 
-        textRepresentation = porterStemmer.getTextRepresentation(query)
-        wordsQuery = list(textRepresentation.keys())
-        weights = []
+        weights = porterStemmer.getTextRepresentation(query)
         N = len(self.indexerSimple.index)
         
-        for t,v in self.indexerSimple.index_inv.items():
-            if t in wordsQuery :
-                #nb doc contenant t
-                df = len(v)
-                idf = np.log((N+1)/(1+df))
-                weights.append((1+np.log(textRepresentation[t]))*idf)
-            else:
-                weights.append(0)
-    
+        for t,v in weights.items():
+            #df = nb doc contenant t
+            df = len(self.indexerSimple.index_inv[t]) if t in self.indexerSimple.index_inv else 0
+            idf = np.log((N+1)/(1+df))
+            weights[t]  = (1+np.log(v))*idf
+        
         return weights
