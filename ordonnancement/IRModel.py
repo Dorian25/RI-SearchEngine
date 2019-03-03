@@ -3,7 +3,7 @@
 Created on Sat Feb 16 18:01:07 2019
 
 @author: Dorian
-@author: Abdela
+@author: Mouhamad
 """
 
 from abc import ABC, abstractmethod
@@ -19,4 +19,4 @@ class IRModel(ABC):
         pass
     
     def getRanking(self,query):
-        return sorted(self.getScores(query), key = lambda score : score[1], reverse = True)
+        return sorted(self.getScores(query).items(), key = lambda score : score[1], reverse = True)

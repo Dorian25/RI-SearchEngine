@@ -3,7 +3,7 @@
 Created on Sat Feb 16 17:05:00 2019
 
 @author: Dorian
-@author: Abdela
+@author: Mouhamad
 """
 
 from .Weighter import Weighter
@@ -16,7 +16,7 @@ class Weighter4(Weighter):
         super().__init__(indexerSimple)
         
     def getWeightsForDoc(self,idDoc):
-        weights = self.indexerSimple.index[idDoc] if idDoc in self.indexerSimple.index else {}
+        weights = self.indexerSimple.index[idDoc].copy() if idDoc in self.indexerSimple.index else {}
         
         for t,v in weights.items():
             weights[t] = 1+np.log(v)
@@ -24,7 +24,7 @@ class Weighter4(Weighter):
         return weights
  
     def getWeightsForStem(self,stem):
-        weights = self.indexerSimple.index_inv[stem] if stem in self.indexerSimple.index_inv else {}
+        weights = self.indexerSimple.index_inv[stem].copy() if stem in self.indexerSimple.index_inv else {}
         
         for doc_i,v in weights.items():
             weights[doc_i] = 1+np.log(v)

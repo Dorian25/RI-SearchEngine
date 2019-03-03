@@ -3,7 +3,7 @@
 Created on Sat Feb 16 18:36:13 2019
 
 @author: Dorian
-@author: Abdela
+@author: Mouhamad
 
 source 1 : https://fr.wikipedia.org/wiki/Okapi_BM25
 """
@@ -19,18 +19,16 @@ class Okapi(IRModel):
         super().__init__(indexerSimple)
         
     def getScores(self,query):
-        scores = []
+        scores = {}
         
         index = self.indexerSimple.index
         index_inv = self.indexerSimple.index_inv
         
-        #On calcul la longueur moyenne des documents dans la collection considérée
-        # ?? 
-        # longueur doc = nb terme distinct ou somme des tf d'un doc
+        #On calcule la longueur moyenne des documents dans la collection considérée
+        # longueur doc = somme des tf d'un doc
         sumLength = 0
         for k,v in index.items():
-            #nb mots distincts
-            #sumLength += len(v)
+            #nb mots
             sumLength += sum(v.values())
         N = len(index)
         avgdl = sumLength / N
@@ -40,25 +38,29 @@ class Okapi(IRModel):
         
         porterStemmer = PorterStemmer() 
         textRepresentation = porterStemmer.getTextRepresentation(query)
-        wordsQuery = list(textRepresentation.keys())
+        terms_q = list(textRepresentation.keys())
         
-        for doc_i,tf in index.items() :
-            score = 0
-            longDoc = sum(tf.values())
-            
-            for qi in wordsQuery :
+        for t in terms_q:
+            #on ne garde que les docs qui contiennent le terme t de la requete
+            for doc_i,tf in index_inv[t].items():
+
+                score = 0
+                longDoc = sum(tf.values())
+                
                 #nb documents contenant qi
-                n_qi = len(index_inv[qi]) if qi in index_inv else 0
-                
+                n_qi = len(index_inv[t]) if t in index_inv else 0
+                    
                 IDF_qi = np.log((N - n_qi + 0.5) / (n_qi + 0.5))
-                
+                    
                 # frequence d'un terme == tf ==  nombre d'occurrences de ce terme
-                f_qi_D = tf[qi] if qi in tf else 0
+                f_qi_D = tf[t] if t in tf else 0
+                    
+                score = IDF_qi * (f_qi_D * (k1 + 1)) / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
                 
-                score += IDF_qi * (f_qi_D * (k1 + 1)) / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
-            
-            
-            scores.append((doc_i,score))
+                if doc_i in scores:
+                    scores[doc_i] += score
+                else:
+                    scores[doc_i] = score
         
         return scores
     
