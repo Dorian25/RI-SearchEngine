@@ -42,25 +42,29 @@ class Okapi(IRModel):
         
         for t in terms_q:
             #on ne garde que les docs qui contiennent le terme t de la requete
-            for doc_i,tf in index_inv[t].items():
-
-                score = 0
-                longDoc = sum(tf.values())
-                
-                #nb documents contenant qi
-                n_qi = len(index_inv[t]) if t in index_inv else 0
+            if t in index_inv :
+                for doc_i,tf in index_inv[t].items():
+    
+                    score = 0
+                    #somme des tfs = longueur du doc
+                    longDoc = sum(index_inv[t].values())
                     
-                IDF_qi = np.log((N - n_qi + 0.5) / (n_qi + 0.5))
+                    #nb documents contenant qi
+                    n_qi = len(index_inv[t])
+                        
+                    IDF_qi = np.log((N - n_qi + 0.5) / (n_qi + 0.5))
+                        
+                    # frequence d'un terme == tf ==  nombre d'occurrences de ce terme
+                    f_qi_D = tf
+                        
+                    #score = IDF_qi * (f_qi_D * (k1 + 1)) / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
+                    score = IDF_qi * f_qi_D / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
                     
-                # frequence d'un terme == tf ==  nombre d'occurrences de ce terme
-                f_qi_D = tf[t] if t in tf else 0
                     
-                score = IDF_qi * (f_qi_D * (k1 + 1)) / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
-                
-                if doc_i in scores:
-                    scores[doc_i] += score
-                else:
-                    scores[doc_i] = score
+                    if doc_i in scores:
+                        scores[doc_i] += score
+                    else:
+                        scores[doc_i] = score
         
         return scores
     

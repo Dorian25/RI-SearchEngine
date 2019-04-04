@@ -3,7 +3,7 @@
 Created on Sat Feb 16 18:24:39 2019
 
 @author: Dorian
-@author: 
+@author: Mouhamad
 """
 
 from .IRModel import IRModel
@@ -37,19 +37,20 @@ class Vectoriel(IRModel):
             #calcul de norme sqrt(x1**2 + x2**2 + ...
             for tq,poids_tq in q.items() :
                 #on ne garde que les docs qui contiennent le terme tq de la query
-                for doc_i in index_inv[tq].keys():
-                    d = self.weighter.getWeightsForDoc(doc_i)
-                    #on calcule la norme du doc_i et on l'ajoute dans le dico
-                    #s'il n'est pas présent
-                    if doc_i not in normes_docs.items():
-                        normes_docs[doc_i] = np.sqrt(sum([v**2 for v in d.values()]))
+                if tq in index_inv :
+                    for doc_i in index_inv[tq].keys():
+                        d = self.weighter.getWeightsForDoc(doc_i)
+                        #on calcule la norme du doc_i et on l'ajoute dans le dico
+                        #s'il n'est pas présent
+                        if doc_i not in normes_docs.items():
+                            normes_docs[doc_i] = np.sqrt(sum([v**2 for v in d.values()]))
+                            
+                        score = poids_tq * d[tq]
                         
-                    score = poids_tq * d[tq]
-                    
-                    if doc_i in scores:
-                        scores[doc_i] += score
-                    else :
-                        scores[doc_i] = score
+                        if doc_i in scores:
+                            scores[doc_i] += score
+                        else :
+                            scores[doc_i] = score
                         
             #prod_scalaire / norm(X)**(1/2) + norm(Y)**(1/2)            
             for doc_i in scores.keys():
@@ -58,14 +59,15 @@ class Vectoriel(IRModel):
         else : 
             #Produit Scalaire
             for t in terms_q:
-                for doc_i in index_inv[t].keys():
-                    d = self.weighter.getWeightsForDoc(doc_i)
-                
-                    score = q[t] * d[t]
+                if t in index_inv :
+                    for doc_i in index_inv[t].keys():
+                        d = self.weighter.getWeightsForDoc(doc_i)
                     
-                    if doc_i in scores:
-                        scores[doc_i] += score
-                    else :
-                        scores[doc_i] = score
+                        score = q[t] * d[t]
+                        
+                        if doc_i in scores:
+                            scores[doc_i] += score
+                        else :
+                            scores[doc_i] = score
             
         return scores
