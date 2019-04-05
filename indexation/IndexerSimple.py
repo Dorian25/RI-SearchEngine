@@ -20,6 +20,7 @@ class IndexerSimple:
         self._index_inv = {}
         self._index_norm = {}
         self._index_inv_norm = {}
+        self._index_hypertext = {}
         
     def indexation(self,documents):
         
@@ -28,6 +29,10 @@ class IndexerSimple:
             porterStemmer = PorterStemmer() 
             textRepresentation = porterStemmer.getTextRepresentation(doc.T)
             self.index[doc.I] = textRepresentation
+            
+            self.index_hypertext[doc.I] = []
+            for line in doc.X.split(" "):
+                self.index_hypertext[doc.I].append(line.split("\t")[0])
             
             for k,v in textRepresentation.items() :
                 if k in self.index_inv :
@@ -123,11 +128,15 @@ class IndexerSimple:
     def _set_index_inv_norm(self,newIndexInvNorm):
         self._index_inv_norm = newIndexInvNorm
         
+    def _get_index_hypertext(self):
+        return self._index_hypertext
+        
+    def _set_index_hypertext(self,newIndexInvHypertext):
+        self._index_hypertext = newIndexInvHypertext
+        
     
     index = property(_get_index,_set_index)
     index_inv = property(_get_index_inv,_set_index_inv)
     index_norm = property(_get_index_norm,_set_index_norm)
     index_inv_norm = property(_get_index_inv_norm,_set_index_inv_norm)
-    
-    
-    
+    index_hypertext = property(_get_index_hypertext,_set_index_hypertext)

@@ -16,6 +16,17 @@ class QueryParser:
         self._req_content = req_content
         self._pertinence_content = pertinence_content
         
+    def remplirQuery(self,query, contenuBalise, currentBalise) :
+        if currentBalise == ".A":
+            query.A = " ".join(contenuBalise)
+        elif currentBalise == ".N":
+            query.N = " ".join(contenuBalise)
+        elif currentBalise == ".W":
+            query.W = " ".join(contenuBalise)
+        else:
+            print("Error")
+        
+        
     def parse(self) :
         
         requetes = {}
@@ -28,12 +39,13 @@ class QueryParser:
             #on a pas besoin du premier élément (vide)
             new_split_content = split_content_req[1:]
             
-            currentBalise = ""
-            contenuBalise = ""
             balises = [".A",".N",".W"]
             
             for req in new_split_content :
                 query = Query()
+                
+                currentBalise = ""
+                contenuBalise = []
                 
                 lines = req.splitlines()
                 query.I = lines[0]
@@ -43,22 +55,13 @@ class QueryParser:
                         if not currentBalise :
                             currentBalise = lines[i]
                         else :
-                            if currentBalise == ".A":
-                                query.A = contenuBalise
-                            elif currentBalise == ".N":
-                                query.N = contenuBalise
-                            elif currentBalise == ".W":
-                                query.W = contenuBalise
-                            else:
-                                print("Error")
-                            
-                            contenuBalise = ""
+                            self.remplirQuery(query,contenuBalise,currentBalise)
+                            contenuBalise = []
                             currentBalise = lines[i]
                     else :
-                        contenuBalise += lines[i]
-                        
-                currentBalise = ""
-                contenuBalise = ""
+                        contenuBalise.append(lines[i])
+                #on affecte le contenu pour la derniere balise
+                self.remplirQuery(query,contenuBalise,currentBalise)
                 requetes[query.I] = query
             
             for line in split_content_pert :

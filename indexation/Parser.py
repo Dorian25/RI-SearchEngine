@@ -3,7 +3,7 @@
 Created on Sun Feb 10 11:29:58 2019
 
 @author: Dorian
-@author: Abdela
+@author: Mouhamad
 """
 
 from .Document import Document
@@ -12,6 +12,24 @@ class Parser:
     
     def __init__(self, file_content):
         self._file_content = file_content
+        
+    def remplirDoc(self,document,contenuBalise,currentBalise) :
+        if currentBalise == ".T":
+            document.T = " ".join(contenuBalise)
+        elif currentBalise == ".B":
+            document.B = " ".join(contenuBalise)
+        elif currentBalise == ".A":
+            document.A = " ".join(contenuBalise)
+        elif currentBalise == ".N":
+            document.N = " ".join(contenuBalise)
+        elif currentBalise == ".K":
+            document.K = " ".join(contenuBalise)
+        elif currentBalise == ".X":
+            document.X = " ".join(contenuBalise)
+        elif currentBalise == ".W":
+            document.W = " ".join(contenuBalise)
+        else:
+            print("Error")
         
     def parse(self) :
         
@@ -23,13 +41,14 @@ class Parser:
             split_content = self.file_content.split(".I ")
             #on a pas besoin du premier élément (vide)
             new_split_content = split_content[1:]
-            
-            currentBalise = ""
-            contenuBalise = ""
+       
             balises = [".T",".B",".A",".N",".W",".X",".K"]
             
             for doc in new_split_content :
                 document = Document()
+                
+                currentBalise = ""
+                contenuBalise = []
                 
                 lines = doc.splitlines()
                 document.I = lines[0]
@@ -39,30 +58,13 @@ class Parser:
                         if not currentBalise :
                             currentBalise = lines[i]
                         else :
-                            if currentBalise == ".T":
-                                document.T = contenuBalise
-                            elif currentBalise == ".B":
-                                document.B = contenuBalise
-                            elif currentBalise == ".A":
-                                document.A = contenuBalise
-                            elif currentBalise == ".N":
-                                document.N = contenuBalise
-                            elif currentBalise == ".K":
-                                document.K = contenuBalise
-                            elif currentBalise == ".W":
-                                document.W = contenuBalise
-                            elif currentBalise == ".X":
-                                document.X = contenuBalise
-                            else:
-                                print("Error")
-                            
-                            contenuBalise = ""
+                            self.remplirDoc(document,contenuBalise,currentBalise)
+                            contenuBalise = []
                             currentBalise = lines[i]
                     else :
-                        contenuBalise += lines[i]
-                        
-                currentBalise = ""
-                contenuBalise = ""
+                        contenuBalise.append(lines[i])
+                #on affecte le contenu pour la derniere balise        
+                self.remplirDoc(document,contenuBalise,currentBalise)        
                 documents[document.I] = document
             
             return documents
