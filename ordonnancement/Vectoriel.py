@@ -27,6 +27,7 @@ class Vectoriel(IRModel):
         terms_q = list(textRepresentation.keys())
         
         q = self.weighter.getWeightsForQuery(query)
+    
         norme_q = np.sqrt(sum([v**2 for v in q.values()]))
         #k=idDoc ; v=normeDoc
         normes_docs = {}
@@ -42,6 +43,7 @@ class Vectoriel(IRModel):
                         d = self.weighter.getWeightsForDoc(doc_i)
                         #on calcule la norme du doc_i et on l'ajoute dans le dico
                         #s'il n'est pas présent
+                    
                         if doc_i not in normes_docs.items():
                             normes_docs[doc_i] = np.sqrt(sum([v**2 for v in d.values()]))
                             
@@ -52,9 +54,9 @@ class Vectoriel(IRModel):
                         else :
                             scores[doc_i] = score
                         
-            #prod_scalaire / norm(X)**(1/2) + norm(Y)**(1/2)            
+            #prod_scalaire / norm(X)**(1/2) + norm(Y)**(1/2)  
             for doc_i in scores.keys():
-                 scores[doc_i] /= norme_q + normes_docs[doc_i]
+                 scores[doc_i] /= (norme_q + normes_docs[doc_i])
                 
         else : 
             #Produit Scalaire

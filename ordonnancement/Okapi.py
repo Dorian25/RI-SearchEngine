@@ -47,19 +47,20 @@ class Okapi(IRModel):
     
                     score = 0
                     #somme des tfs = longueur du doc
-                    longDoc = sum(index_inv[t].values())
+                    longDoc = sum(index[doc_i].values())
                     
                     #nb documents contenant qi
                     n_qi = len(index_inv[t])
                         
-                    IDF_qi = np.log((N - n_qi + 0.5) / (n_qi + 0.5))
-                        
+                    IDF_qi = np.log((N + 1) / (n_qi + 1))
+             
                     # frequence d'un terme == tf ==  nombre d'occurrences de ce terme
                     f_qi_D = tf
-                        
+            
+                    #wikipedia  
                     #score = IDF_qi * (f_qi_D * (k1 + 1)) / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
-                    score = IDF_qi * f_qi_D / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))               
-                    
+                    #cours
+                    score = IDF_qi * f_qi_D / (f_qi_D + k1 * (1 - b + b * longDoc/avgdl))
                     
                     if doc_i in scores:
                         scores[doc_i] += score
@@ -67,5 +68,3 @@ class Okapi(IRModel):
                         scores[doc_i] = score
         
         return scores
-    
-        

@@ -82,7 +82,7 @@ evaluations,moyecart = EvalIRModel(ex_query,[ml,oka],[precision,rappel,fmeasure]
 
 
 
-file_cacm = open("data/cacm/cacm.txt","r")
+file_cacm = open("data/cacm/cacmShort-good.txt","r")
 content_cacm = file_cacm.read()
 
 #file_cisi = open("data/cisi/cisi.txt","r")
@@ -97,6 +97,11 @@ documents_cacm = parse_cacm.parse()
 index_cacm = IndexerSimple("cacm")
 index_cacm.indexation(documents_cacm)
 
+ml = ModeleLangue(index_cacm)
+print(ml.getScores("programming engineering"))
+oka = Okapi(index_cacm)
+print(oka.getScores("programming engineering"))
+
 #index_cisi = IndexerSimple("cisi")
 #index_cisi.indexation(documents_cisi)
 
@@ -108,7 +113,7 @@ index_cacm.indexation(documents_cacm)
 #print(index_cacm.getTfIDFsForDoc(documents_cacm[0]))
 #print(index_cacm.getTfsForStem("report"))
 #print(index_cacm.getTfIDFsForStem("preliminari"))
-
+"""
 query_cacm = open("data/cacm/cacm.qry","r")
 pertinence_cacm = open("data/cacm/cacm.rel","r")
 
@@ -131,3 +136,4 @@ fmeasure = EvalMesureFMeasure()
 ndcg = EvalMesureNDCG()
 
 evaluations,moyecart = EvalIRModel(requetes_cacm,[ml,oka],[precision,rappel,fmeasure,ndcg],["Modele Langue","Okapi_BM25"],["Precision","Rappel","FMeasure","NDCG"]).eval()
+"""
