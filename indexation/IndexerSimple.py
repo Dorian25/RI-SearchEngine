@@ -21,6 +21,7 @@ class IndexerSimple:
         self._index_norm = {}
         self._index_inv_norm = {}
         self._index_hypertext = {}
+        self._index_inv_hypertext = {}
         
     def indexation(self,documents):
         
@@ -30,9 +31,13 @@ class IndexerSimple:
             textRepresentation = porterStemmer.getTextRepresentation(doc.T)
             self.index[doc.I] = textRepresentation
             
-            self.index_hypertext[doc.I] = []
+            first_col = []
             for line in doc.X.split(" "):
-                self.index_hypertext[doc.I].append(line.split("\t")[0])
+                first_col.append(line.split("\t")[0])
+            
+            docs_cited = porterStemmer.getTextRepresentation(" ".join(first_col))
+            #les documents que cite le doc courant
+            self.index_hypertext[doc.I] = docs_cited
             
             for k,v in textRepresentation.items() :
                 if k in self.index_inv :
@@ -40,16 +45,24 @@ class IndexerSimple:
                 else :
                     self.index_inv[k] = {}
                     self.index_inv[k].update({doc.I : self.index[doc.I][k]})
-                    
-        name_f_index = "index_"+self.name_collection+".txt"
-        name_f_index_inv = "index_inv_"+self.name_collection+".txt"
+            
+            for k_h,v_h in docs_cited.items():
+                if k_h in self.index_inv_hypertext :
+                    self.index_inv_hypertext[k_h].update({doc.I : self.index_hypertext[doc.I][k_h]})
+                else :
+                    self.index_inv_hypertext[k_h] = {}
+                    self.index_inv_hypertext[k_h].update({doc.I : self.index_hypertext[doc.I][k_h]})
+         
+        #ecrit dans un fichier les index
+        #name_f_index = "index_"+self.name_collection+".txt"
+        #name_f_index_inv = "index_inv_"+self.name_collection+".txt"
         
         #On écrit l'index dans un fichier
-        with open(name_f_index, 'w') as f1:
-            json.dump(self.index, f1)
+        #with open(name_f_index, 'w') as f1:
+        #    json.dump(self.index, f1)
         #On écrit l'index inversé dans un fichier            
-        with open(name_f_index_inv, 'w') as f2:
-            json.dump(self.index_inv, f2)
+        #with open(name_f_index_inv, 'w') as f2:
+        #    json.dump(self.index_inv, f2)
         
         
     def getTfsForDoc(self,doc) :
@@ -104,6 +117,15 @@ class IndexerSimple:
 
         return stemTfIDF
     
+    
+    def getHyperlinksTo(self, doc):
+        """les documents qui citent un document donne en parametre."""   
+        return self.index_hypertext[doc]
+    
+    def getHyperlinksFrom(self, doc) :
+        """les documents cites par un document donne en parametre."""
+        return 0
+    
     def _get_index(self):
         return self._index
         
@@ -131,8 +153,14 @@ class IndexerSimple:
     def _get_index_hypertext(self):
         return self._index_hypertext
         
-    def _set_index_hypertext(self,newIndexInvHypertext):
-        self._index_hypertext = newIndexInvHypertext
+    def _set_index_hypertext(self,newIndexHypertext):
+        self._index_hypertext = newIndexHypertext
+        
+    def _get_index_inv_hypertext(self):
+        return self._index_inv_hypertext
+        
+    def _set_index_inv_hypertext(self,newIndexInvHypertext):
+        self._index_inv_hypertext = newIndexInvHypertext
         
     
     index = property(_get_index,_set_index)
@@ -140,3 +168,4 @@ class IndexerSimple:
     index_norm = property(_get_index_norm,_set_index_norm)
     index_inv_norm = property(_get_index_inv_norm,_set_index_inv_norm)
     index_hypertext = property(_get_index_hypertext,_set_index_hypertext)
+    index_inv_hypertext = property(_get_index_inv_hypertext,_set_index_inv_hypertext)

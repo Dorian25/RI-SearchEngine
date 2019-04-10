@@ -106,7 +106,8 @@ print(oka.getScores("programming engineering"))
 #index_cisi.indexation(documents_cisi)
 
 #w = Weighter5(index_cacm)
-#v = Vectoriel(index_cacm,w,False)
+#v = Vectoriel(index_cacm,w,True)
+#print(v.getScores("programming engineering"))
 #rank = v.getRanking("home top sales eau")
 
 #print(index_cacm.getTfsForDoc(documents_cacm[5]))
