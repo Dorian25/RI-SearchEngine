@@ -117,14 +117,13 @@ class IndexerSimple:
 
         return stemTfIDF
     
-    
     def getHyperlinksTo(self, doc):
         """les documents qui citent un document donne en parametre."""   
-        return self.index_hypertext[doc]
+        return self.index_hypertext[doc.I].keys()
     
-    def getHyperlinksFrom(self, doc) :
+    def getHyperlinksFrom(self, doc):
         """les documents cites par un document donne en parametre."""
-        return 0
+        return self.index_inv_hypertext[doc.I].keys()
     
     def _get_index(self):
         return self._index

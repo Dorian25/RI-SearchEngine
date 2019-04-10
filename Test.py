@@ -25,6 +25,7 @@ from evaluation.EvalMesureRappel import EvalMesureRappel
 from evaluation.EvalMesureFMeasure import EvalMesureFMeasure
 from evaluation.EvalMesureNDCG import EvalMesureNDCG
 from evaluation.EvalIRModel import EvalIRModel
+from evaluation.PageRank import PageRank
 
 
 """
@@ -101,6 +102,12 @@ ml = ModeleLangue(index_cacm)
 print(ml.getScores("programming engineering"))
 oka = Okapi(index_cacm)
 print(oka.getScores("programming engineering"))
+
+
+pRank = PageRank(index_cacm)
+candidates = oka.getRanking("programming engineering")
+
+print(pRank.pageRank(candidates,100,3,0.001))
 
 #index_cisi = IndexerSimple("cisi")
 #index_cisi.indexation(documents_cisi)
