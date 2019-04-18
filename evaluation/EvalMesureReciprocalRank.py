@@ -14,7 +14,7 @@ class EvalMesureReciprocalRank(EvalMesure):
     def __init__(self) :
         super().__init__()
         
-    def evalQuery(liste, query):
+    def evalQuery(self,liste, query):
         
         #refers to the rank position of the first relevant document for the query
         for i in range(len(liste)) :

@@ -3,12 +3,11 @@
 Created on Sun Feb 10 11:23:55 2019
 
 @author: Dorian
-@author: Abdela
+@author: Mouhamad
 
 source_1 : https://stackoverflow.com/questions/21453117/json-dumps-not-working
 """
 #index norm et index inv norm a faire
-import json
 import math
 from .TextRepresenter import PorterStemmer
 
@@ -119,11 +118,14 @@ class IndexerSimple:
     
     def getHyperlinksTo(self, doc):
         """les documents qui citent un document donne en parametre."""   
-        return self.index_hypertext[doc.I].keys()
+        return self.index_hypertext[doc]
     
     def getHyperlinksFrom(self, doc):
         """les documents cites par un document donne en parametre."""
-        return self.index_inv_hypertext[doc.I].keys()
+        if doc in self.index_inv_hypertext :    
+            return self.index_inv_hypertext[doc]
+        else :
+            return {}
     
     def _get_index(self):
         return self._index

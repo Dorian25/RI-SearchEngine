@@ -16,25 +16,26 @@ class EvalMesureNDCG(EvalMesure):
     def __init__(self) :
         super().__init__()
         
-    def evalQuery(self,liste, query, p=3):        
-        
-        #pertinence graduée du document 1
-        rel1 = 1 if liste[0] in query.listDocsPertinents else 0
-        
-        sum_in_DCG = 0
-        sum_in_IDCG = 0
+    def evalQuery(self,liste, query, p=50):  
+        p = min(p, len(liste))
+        if not liste :
+            return 0
+                
+        DCG = 0
+        IDCG = 0
         #on prend p docs sans prendre le premier
-        for i in range(1,p) :
+        for i in range(p) :
             if liste[i] in query.listDocsPertinents :
-                sum_in_DCG += 1 / log2(i+1)
+                DCG += 1 / log2(i+2)
         #les documents apparaissant à un rang élevé seront penalisés par le log2
-        DCG = rel1 + sum_in_DCG
         
         #nb doc pertinent <= p
-        for i in range(p) :
-            sum_in_IDCG +=  ((2**1)-1) / log2(i+2)
+        for i in range(len(liste)) :
+            reli = liste[i] in query.listDocsPertinents
+            IDCG +=  (2**reli - 1) / log2(i+2)
         
         #ideal DCG = maximum possible DCG through position p
-        IDCG = sum_in_IDCG
+        if IDCG == 0:
+            return 0
         
         return DCG / IDCG

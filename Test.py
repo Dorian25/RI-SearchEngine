@@ -21,6 +21,8 @@ from ordonnancement.Vectoriel import Vectoriel
 from evaluation.QueryParser import QueryParser
 from evaluation.Query import Query
 from evaluation.EvalMesurePrecision import EvalMesurePrecision
+from evaluation.EvalMesurePrecisionMoyenne import EvalMesurePrecisionMoyenne
+from evaluation.EvalMesureReciprocalRank import EvalMesureReciprocalRank
 from evaluation.EvalMesureRappel import EvalMesureRappel
 from evaluation.EvalMesureFMeasure import EvalMesureFMeasure
 from evaluation.EvalMesureNDCG import EvalMesureNDCG
@@ -81,67 +83,45 @@ fmeasure = EvalMesureFMeasure()
 evaluations,moyecart = EvalIRModel(ex_query,[ml,oka],[precision,rappel,fmeasure],["Modele Langue","Okapi_BM25"],["Precision","Rappel","FMeasure"]).eval()
 """
 
-
-
-file_cacm = open("data/cacm/cacmShort-good.txt","r")
+file_cacm = open("data/cacm/cacm.txt","r")
 content_cacm = file_cacm.read()
-
 #file_cisi = open("data/cisi/cisi.txt","r")
 #content_cisi = file_cisi.read()
 
 parse_cacm = Parser(content_cacm)
 documents_cacm = parse_cacm.parse()
-
 #parse_cisi = Parser(content_cisi)
 #documents_cisi = parse_cisi.parse()
           
 index_cacm = IndexerSimple("cacm")
 index_cacm.indexation(documents_cacm)
-
-ml = ModeleLangue(index_cacm)
-print(ml.getScores("programming engineering"))
-oka = Okapi(index_cacm)
-print(oka.getScores("programming engineering"))
-
-
-pRank = PageRank(index_cacm)
-candidates = oka.getRanking("programming engineering")
-
-print(pRank.pageRank(candidates,100,3,0.001))
-
 #index_cisi = IndexerSimple("cisi")
 #index_cisi.indexation(documents_cisi)
 
-#w = Weighter5(index_cacm)
-#v = Vectoriel(index_cacm,w,True)
-#print(v.getScores("programming engineering"))
-#rank = v.getRanking("home top sales eau")
-
-#print(index_cacm.getTfsForDoc(documents_cacm[5]))
-#print(index_cacm.getTfIDFsForDoc(documents_cacm[0]))
-#print(index_cacm.getTfsForStem("report"))
-#print(index_cacm.getTfIDFsForStem("preliminari"))
-"""
 query_cacm = open("data/cacm/cacm.qry","r")
 pertinence_cacm = open("data/cacm/cacm.rel","r")
 
 content_cacm_q = query_cacm.read()
 content_cacm_pert = pertinence_cacm.read()
 
-
 parse_cacm_q = QueryParser(content_cacm_q,content_cacm_pert)
 requetes_cacm = parse_cacm_q.parse()
 
-#for i,r in requetes_cacm.items() :
-#    print(r.listDocsPertinents)
-    
+#modèles
 ml = ModeleLangue(index_cacm)
 oka = Okapi(index_cacm)
+w = Weighter5(index_cacm)
+v = Vectoriel(index_cacm,w,False)
 
+#métriques
 precision = EvalMesurePrecision() 
 rappel = EvalMesureRappel()
 fmeasure = EvalMesureFMeasure()
+reciprocal_rank = EvalMesureReciprocalRank()
 ndcg = EvalMesureNDCG()
+precision_moy = EvalMesurePrecisionMoyenne()
 
-evaluations,moyecart = EvalIRModel(requetes_cacm,[ml,oka],[precision,rappel,fmeasure,ndcg],["Modele Langue","Okapi_BM25"],["Precision","Rappel","FMeasure","NDCG"]).eval()
-"""
+#comparaison modèles avec métriques
+pRank = PageRank(index_cacm)
+evaluations,moyecart = EvalIRModel(requetes_cacm,[ml,v],[precision,rappel,fmeasure,ndcg],["Modele Langue","Vectoriel_W5"],["Precision","Rappel","FMeasure","NDCG"]).eval()
+evaluations_pr,moyecart_pr = EvalIRModel(requetes_cacm,[ml,v],[precision,rappel,fmeasure,ndcg],["Modele Langue","Vectoriel_W5"],["Precision","Rappel","FMeasure","NDCG"]).evalWithPageRank(pRank)

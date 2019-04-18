@@ -36,13 +36,13 @@ class EvalMesureRappel(EvalMesure):
     """   
      
     #RAPPEL AU RANG K (diapo 14) - R@k(q)
-    def evalQuery(self,liste, query, k=2) :
+    def evalQuery(self,liste, query, k=50) :
         
         #|R|
         nbDocPertinents = len(query.listDocsPertinents)
         if nbDocPertinents == 0 :
             return 0
-        kDocs = liste[:k]
+        kDocs = liste[:min(k,len(liste))]
         
         #jugement de pertinence (document pertinent = 1 //sinon = 0)
         sumJugPertinence = 0

@@ -25,7 +25,7 @@ class EvalMesureFMeasure(EvalMesure):
     """
     
     #F MEASURE AU RANG K
-    def evalQuery(self,liste, query, k=2, beta=1):
+    def evalQuery(self,liste, query, k=50, beta=1):
         
         precision = EvalMesurePrecision().evalQuery(liste, query, k)
         if precision == 0 :

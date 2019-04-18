@@ -15,10 +15,10 @@ class EvalMesurePrecisionMoyenne(EvalMesure):
     def __init__(self) :
         super().__init__()
         
-    def evalQuery(self,liste, query, k=3):
+    def evalQuery(self,liste, query, k=50):
         
         #(n_+)^q
-        nbDocPertinents = len(query.listDocsPertinents)
+        nbDocPertinents = 0
         
         sumJugPrecision = 0
     
@@ -26,6 +26,11 @@ class EvalMesurePrecisionMoyenne(EvalMesure):
             
             if liste[i] in query.listDocsPertinents :
                 
+                nbDocPertinents += 1
+                
                 sumJugPrecision += EvalMesurePrecision().evalQuery(liste,query,i)
+                
+        if nbDocPertinents == 0:
+            return 0
             
         return (1 / nbDocPertinents) * sumJugPrecision

@@ -34,8 +34,10 @@ class EvalMesurePrecision(EvalMesure):
     """
 
     #PRECISION AU RANG K (diapo 14) - P@k(q)
-    def evalQuery(self, liste, query, k=2) :
-        
+    def evalQuery(self, liste, query, k = 50) :
+        k = min(k,len(liste))
+        if k == 0:
+            return 0
         kDocs = liste[:k]
         
         #jugement de pertinence (document pertinent = 1 //sinon = 0)
